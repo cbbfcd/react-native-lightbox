@@ -30,6 +30,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     flex: 1,
     justifyContent: "center",
+    alignItems: "center",
     // Android pan handlers crash without this declaration:
     backgroundColor: "transparent",
   },
