@@ -11,6 +11,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  SafeAreaView
 } from "react-native";
 
 const WINDOW_HEIGHT = Dimensions.get("window").height;
@@ -217,9 +218,11 @@ const LightboxOverlay = (props) => {
       {props.renderHeader ? (
         props.renderHeader(close)
       ) : (
-        <TouchableOpacity onPress={close}>
-          <Text style={styles.closeButton}>×</Text>
-        </TouchableOpacity>
+        <SafeAreaView>
+          <TouchableOpacity onPress={close}>
+            <Text style={styles.closeButton}>×</Text>
+          </TouchableOpacity>
+        </SafeAreaView>
       )}
     </Animated.View>
   );
