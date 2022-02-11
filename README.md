@@ -61,6 +61,7 @@ const MyApp = () => (
 |**`activeProps`**|`object`|Optional set of props applied to the content component when in lightbox mode. Usable for applying custom styles or higher resolution image source.|
 |**`renderHeader(close)`**|`function`|Custom header instead of default with X button|
 |**`renderContent`**|`function`|Custom lightbox content instead of default child content|
+|**`renderItem(open)`**|`function`|Custom content instead of default child content|
 |**`willClose`**|`function`|Triggered before lightbox is closed|
 |**`onClose`**|`function`|Triggered when lightbox is closed|
 |**`onOpen`**|`function`|Triggered when lightbox is opened|

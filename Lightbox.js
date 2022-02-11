@@ -95,16 +95,26 @@ const Lightbox = (props) => {
     props.onClose && props.onClose();
   };
 
+  renderItem = () => {
+    if (props.renderItem) {
+      return props.renderItem(open)
+    }
+
+    return (
+      <TouchableOpacity
+        underlayColor={props.underlayColor}
+        onPress={open}
+        onLongPress={props.onLongPress}
+      >
+        {props.children}
+      </TouchableOpacity>
+    )
+  }
+
   return (
     <View ref={_root} style={props.style} onLayout={props.onLayout}>
       <Animated.View style={{ opacity: layoutOpacity.current }}>
-        <TouchableOpacity
-          underlayColor={props.underlayColor}
-          onPress={open}
-          onLongPress={props.onLongPress}
-        >
-          {props.children}
-        </TouchableOpacity>
+        {renderItem()}
       </Animated.View>
       {props.navigator ? false : <LightboxOverlay {...getOverlayProps()} />}
     </View>
@@ -115,6 +125,7 @@ Lightbox.propTypes = {
   activeProps: PropTypes.object,
   renderHeader: PropTypes.func,
   renderContent: PropTypes.func,
+  renderItem: PropTypes.func,
   underlayColor: PropTypes.string,
   backgroundColor: PropTypes.string,
   didOpen: PropTypes.func,

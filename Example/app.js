@@ -30,6 +30,14 @@ const renderCarousel = () => (
   </Carousel>
 )
 
+const renderItem = (open) => (
+  <View style={styles.customItemBox}>
+    <TouchableOpacity onPress={open} style={styles.customItemButton}>
+      <Text style={styles.customItemText}>I'm a custom element</Text>
+    </TouchableOpacity>
+  </View>
+)
+
 export default () => (
     <SafeAreaView>
       <ScrollView style={styles.container}>
@@ -69,6 +77,14 @@ export default () => (
             <View style={[styles.square, styles.squareSecond]}><Text style={styles.squareText}>I'm a square</Text></View>
           </Lightbox>
         </View>
+        <View style={styles.text}><Text>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </Text></View>
+        <Lightbox renderItem={renderItem}>
+          <Image
+            style={styles.contain}
+            resizeMode="contain"
+            source={{ uri: 'https://www.yayomg.com/wp-content/uploads/2014/04/yayomg-pig-wearing-party-hat.jpg' }}
+          />
+        </Lightbox>
         <View style={styles.text}><Text>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </Text></View>
       </ScrollView>
     </SafeAreaView>
@@ -130,4 +146,18 @@ const styles = StyleSheet.create({
   text: {
     marginVertical: BASE_PADDING * 2,
   },
+  customItemBox: {
+    height: 150,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  customItemButton: {
+    backgroundColor: '#000000',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  customItemText: {
+    padding: 20,
+    color: '#FFFFFF'
+  }
 });

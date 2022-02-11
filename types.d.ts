@@ -3,8 +3,9 @@ declare module 'react-native-lightbox-v2' {
 
   interface LightboxProps {
     activeProps?: any
-    renderHeader?: (close: () => void) => void
-    renderContent?: () => void
+    renderHeader?: (close: () => void) => JSX.Element
+    renderContent?: () => JSX.Element
+    renderItem?: (open: () => void) => JSX.Element
     underlayColor?: string
     backgroundColor?: string
     didOpen?: () => void
