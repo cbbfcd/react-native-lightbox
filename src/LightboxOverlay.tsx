@@ -12,6 +12,7 @@ import {
   Modal,
   GestureResponderHandlers,
   SafeAreaView,
+  useWindowDimensions,
 } from "react-native";
 
 import { LightboxProps, IOrigin, ISpringConfig } from "./Lightbox";
@@ -24,13 +25,12 @@ type OmitedLightboxProps = Omit<
 
 export interface LightboxOverlayProps
   extends OmitedLightboxProps,
-    IGestureProps {
+  IGestureProps {
   isOpen?: boolean;
   origin?: IOrigin;
   springConfig?: ISpringConfig;
 }
 
-const { width: WINDOW_WIDTH, height: WINDOW_HEIGHT } = Dimensions.get("window");
 const isIOS = Platform.OS === "ios";
 const getDefaultTarget = () => ({ x: 0, y: 0, opacity: 1 });
 
@@ -39,8 +39,6 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 0,
     left: 0,
-    width: WINDOW_WIDTH,
-    height: WINDOW_HEIGHT,
   },
   open: {
     position: "absolute",
@@ -54,7 +52,6 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 0,
     left: 0,
-    width: WINDOW_WIDTH,
     backgroundColor: "transparent",
   },
   closeButton: {
@@ -102,6 +99,8 @@ const LightboxOverlay: React.FC<LightboxOverlayProps> = ({
   const pan = useRef(new Animated.Value(0));
   const openVal = useRef(new Animated.Value(0));
   const handlers = useRef<GestureResponderHandlers>();
+
+  const { width: windowWidth, height: windowHeight } = useWindowDimensions();
 
   const [gesture, animations] = useGesture({
     useNativeDriver,
@@ -208,7 +207,7 @@ const LightboxOverlay: React.FC<LightboxOverlayProps> = ({
             target: {
               y: gestureState.dy,
               x: gestureState.dx,
-              opacity: 1 - Math.abs(gestureState.dy / WINDOW_HEIGHT),
+              opacity: 1 - Math.abs(gestureState.dy / windowHeight),
             },
           }));
           close();
@@ -252,7 +251,7 @@ const LightboxOverlay: React.FC<LightboxOverlayProps> = ({
       top: pan.current,
     };
     lightboxOpacityStyle.opacity = pan.current.interpolate({
-      inputRange: [-WINDOW_HEIGHT, 0, WINDOW_HEIGHT],
+      inputRange: [-windowHeight, 0, windowHeight],
       outputRange: [0, 1, 0],
     });
   }
@@ -270,23 +269,23 @@ const LightboxOverlay: React.FC<LightboxOverlayProps> = ({
       }),
       width: openVal.current.interpolate({
         inputRange: [0, 1],
-        outputRange: [origin!.width, WINDOW_WIDTH],
+        outputRange: [origin!.width, windowWidth],
       }),
       height: openVal.current.interpolate({
         inputRange: [0, 1],
-        outputRange: [origin!.height, WINDOW_HEIGHT],
+        outputRange: [origin!.height, windowHeight],
       }),
     },
   ];
 
   const background = (
     <Animated.View
-      style={[styles.background, { backgroundColor }, lightboxOpacityStyle]}
+      style={[styles.background, { width: windowWidth, height: windowHeight, backgroundColor }, lightboxOpacityStyle]}
     ></Animated.View>
   );
 
   const header = (
-    <Animated.View style={[styles.header, lightboxOpacityStyle]}>
+    <Animated.View style={[styles.header, { width: windowWidth }, lightboxOpacityStyle]}>
       {renderHeader ? (
         renderHeader(close)
       ) : (
@@ -313,6 +312,7 @@ const LightboxOverlay: React.FC<LightboxOverlayProps> = ({
       visible={isOpen}
       transparent={true}
       onRequestClose={close}
+      supportedOrientations={['portrait', 'landscape']}
       {...modalProps}
     >
       {background}
