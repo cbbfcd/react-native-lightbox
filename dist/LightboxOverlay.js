@@ -1,7 +1,6 @@
 import React, { useRef, useEffect, useState } from "react";
-import { Animated, Dimensions, PanResponder, Platform, StyleSheet, StatusBar, TouchableOpacity, Text, Modal, SafeAreaView, } from "react-native";
+import { Animated, PanResponder, Platform, StyleSheet, StatusBar, TouchableOpacity, Text, Modal, SafeAreaView, useWindowDimensions, } from "react-native";
 import { useGesture, useNextTick } from "./hooks";
-const { width: WINDOW_WIDTH, height: WINDOW_HEIGHT } = Dimensions.get("window");
 const isIOS = Platform.OS === "ios";
 const getDefaultTarget = () => ({ x: 0, y: 0, opacity: 1 });
 const styles = StyleSheet.create({
@@ -9,8 +8,6 @@ const styles = StyleSheet.create({
         position: "absolute",
         top: 0,
         left: 0,
-        width: WINDOW_WIDTH,
-        height: WINDOW_HEIGHT,
     },
     open: {
         position: "absolute",
@@ -24,7 +21,6 @@ const styles = StyleSheet.create({
         position: "absolute",
         top: 0,
         left: 0,
-        width: WINDOW_WIDTH,
         backgroundColor: "transparent",
     },
     closeButton: {
@@ -47,6 +43,7 @@ const LightboxOverlay = ({ useNativeDriver = false, dragDismissThreshold, spring
     const pan = useRef(new Animated.Value(0));
     const openVal = useRef(new Animated.Value(0));
     const handlers = useRef();
+    const { width: windowWidth, height: windowHeight } = useWindowDimensions();
     const [gesture, animations] = useGesture({
         useNativeDriver,
         doubleTapZoomEnabled,
@@ -139,7 +136,7 @@ const LightboxOverlay = ({ useNativeDriver = false, dragDismissThreshold, spring
                         target: {
                             y: gestureState.dy,
                             x: gestureState.dx,
-                            opacity: 1 - Math.abs(gestureState.dy / WINDOW_HEIGHT),
+                            opacity: 1 - Math.abs(gestureState.dy / windowHeight),
                         },
                     }));
                     close();
@@ -179,7 +176,7 @@ const LightboxOverlay = ({ useNativeDriver = false, dragDismissThreshold, spring
             top: pan.current,
         };
         lightboxOpacityStyle.opacity = pan.current.interpolate({
-            inputRange: [-WINDOW_HEIGHT, 0, WINDOW_HEIGHT],
+            inputRange: [-windowHeight, 0, windowHeight],
             outputRange: [0, 1, 0],
         });
     }
@@ -196,16 +193,16 @@ const LightboxOverlay = ({ useNativeDriver = false, dragDismissThreshold, spring
             }),
             width: openVal.current.interpolate({
                 inputRange: [0, 1],
-                outputRange: [origin.width, WINDOW_WIDTH],
+                outputRange: [origin.width, windowWidth],
             }),
             height: openVal.current.interpolate({
                 inputRange: [0, 1],
-                outputRange: [origin.height, WINDOW_HEIGHT],
+                outputRange: [origin.height, windowHeight],
             }),
         },
     ];
-    const background = (<Animated.View style={[styles.background, { backgroundColor }, lightboxOpacityStyle]}></Animated.View>);
-    const header = (<Animated.View style={[styles.header, lightboxOpacityStyle]}>
+    const background = (<Animated.View style={[styles.background, { width: windowWidth, height: windowHeight, backgroundColor }, lightboxOpacityStyle]}></Animated.View>);
+    const header = (<Animated.View style={[styles.header, { width: windowWidth }, lightboxOpacityStyle]}>
       {renderHeader ? (renderHeader(close)) : (<SafeAreaView>
           <TouchableOpacity onPress={close}>
             <Text style={styles.closeButton}>×</Text>
@@ -215,7 +212,7 @@ const LightboxOverlay = ({ useNativeDriver = false, dragDismissThreshold, spring
     const content = (<Animated.View style={[openStyle, dragStyle, animations]} {...handlers.current}>
       {children}
     </Animated.View>);
-    return (<Modal visible={isOpen} transparent={true} onRequestClose={close} {...modalProps}>
+    return (<Modal visible={isOpen} transparent={true} onRequestClose={close} supportedOrientations={['portrait', 'landscape']} {...modalProps}>
       {background}
       {content}
       {header}

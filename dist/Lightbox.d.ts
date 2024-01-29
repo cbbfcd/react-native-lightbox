@@ -21,6 +21,7 @@ export interface LightboxProps<T = any> extends IGestureProps {
     onOpen?: Func<T, void>;
     willClose?: Func<T, void>;
     onClose?: Func<T, void>;
+    onPress?: Func<T, void>;
     onLongPress?: Func<T, void>;
     onLayout?: Func<T, void>;
     swipeToDismiss?: boolean;
@@ -32,6 +33,7 @@ export interface LightboxProps<T = any> extends IGestureProps {
     useNativeDriver?: boolean;
     dragDismissThreshold?: number;
     modalProps?: ModalProps;
+    openOnLongPress?: boolean;
 }
 declare const Lightbox: React.FC<LightboxProps>;
 export default Lightbox;
