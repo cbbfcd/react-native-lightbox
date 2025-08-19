@@ -4,6 +4,7 @@ import React, {
   cloneElement,
   Children,
   isValidElement,
+  ReactNode,
 } from "react";
 import {
   StyleProp,
@@ -31,6 +32,7 @@ export interface ISpringConfig {
   friction: number;
 }
 export interface LightboxProps<T = any> extends IGestureProps {
+  children: ReactNode;
   activeProps?: Record<string, T>;
   renderContent?: Func<T, JSX.Element>;
   renderHeader?: Func<T, JSX.Element>;
